@@ -1,0 +1,7 @@
+must_be_player_err : "&cYou must to be a player to execute this command."
+no_permission : "&cYou don't have permission to execute this command."
+game_is_activated : "&aThe Game is now active!"
+hiding_will_start_in : "&#FED579The hiding part will start in&8 &#35F92E"
+game_will_start_in : "&#FED579The game will start in&8 &#35F92E"
+game_over : "&#FED579The game is over! The winner is&8 &#35F92E"
+game_is_ending : "&#FED579The game is ending!"

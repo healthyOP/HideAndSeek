@@ -1,0 +1,4 @@
+name: HideAndSeek
+version: '${project.version}'
+main: me.healthy.hideandseek.HideAndSeek
+api-version: '1.20'
