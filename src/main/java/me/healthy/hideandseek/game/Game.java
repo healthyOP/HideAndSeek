@@ -16,12 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class Game {
-//    private final List<UUID>
-//            players,
-//            spectators;
-//    private final List<UUID>
-//            seekers,
-//            hiders;
     private final HashMap<UUID, Boolean>
             players,
             spectators;
