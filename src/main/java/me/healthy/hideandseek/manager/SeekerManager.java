@@ -1,5 +1,6 @@
 package me.healthy.hideandseek.manager;
 
+import me.healthy.hideandseek.game.Game;
 import me.healthy.hideandseek.utils.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,8 +15,16 @@ import java.util.Collection;
 import java.util.UUID;
 
 public class SeekerManager {
+    private final Game game;
+
+    public SeekerManager(Game game) {
+        this.game = game;
+    }
+
     public void giveKit(final @NotNull UUID playerUUID){
         Player player = Bukkit.getPlayer(playerUUID);
+        boolean is_Seeker = game.isSeeker(playerUUID);
+        if (!is_Seeker) return;
         ItemStack seekerSword = new ItemStack(Material.WOODEN_SWORD);
         ItemMeta itemMeta = seekerSword.getItemMeta();
         itemMeta.setUnbreakable(true);
