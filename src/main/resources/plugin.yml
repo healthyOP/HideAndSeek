@@ -2,3 +2,22 @@ name: HideAndSeek
 version: '${project.version}'
 main: me.healthy.hideandseek.HideAndSeek
 api-version: '1.20'
+authors: [healthy_]
+commands:
+  startgame:
+    description: starts the game
+    usage: /<command>
+    aliases:
+      - start
+      - start
+    permission: admin
+  stopgame:
+    description: ends the game
+    usage: /<command>
+    aliases:
+      - stop
+    permission: admin
+  gamesetlocation:
+    description: sets the location of the game
+    usage: /<command>
+    permission: admin

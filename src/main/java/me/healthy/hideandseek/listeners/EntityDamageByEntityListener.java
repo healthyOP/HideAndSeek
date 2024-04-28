@@ -16,12 +16,11 @@ public class EntityDamageByEntityListener implements Listener {
     @EventHandler
     private void onEntityDamage(EntityDamageByEntityEvent event){
         Player player = (Player) event.getDamager();
-        if (!(event.getDamager() == player)) return;
-        if (!game.isPlaying(player)) return;
-        if (!game.isSeeker(player)) return;
-        if (!game.isHider(player)) event.setCancelled(true);
-        if (event.getEntity().equals(game.isSeeker(player)) && event.getDamager() == player) return;
-
+        if (!(event.getDamager() == player)) event.setCancelled(true);
+        if (!game.isPlaying(player.getUniqueId())) return;
+        if (!game.isSeeker(player.getUniqueId())) event.setCancelled(true);
+        if (!game.isHider(player.getUniqueId())) event.setCancelled(true);
+        if (event.getEntity().equals(game.isSeeker(player.getUniqueId())) && event.getDamager() == player) event.setCancelled(true);
         Player victim = (Player) event.getEntity();
         victim.setHealth(0);
         victim.teleport(victim.getRespawnLocation());

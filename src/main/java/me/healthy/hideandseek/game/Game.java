@@ -1,31 +1,29 @@
 package me.healthy.hideandseek.game;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.healthy.hideandseek.HideAndSeek;
-import me.healthy.hideandseek.listeners.BlockBreakListener;
-import me.healthy.hideandseek.listeners.EntityDamageByEntityListener;
+import me.healthy.hideandseek.listeners.*;
 import me.healthy.hideandseek.manager.PlayerManager;
 import me.healthy.hideandseek.manager.SeekerManager;
 import me.healthy.hideandseek.tasks.CountDownTask;
 import me.healthy.hideandseek.tasks.PlayersHidingTask;
 import me.healthy.hideandseek.utils.ColorUtil;
+import me.healthy.hideandseek.utils.ConfigurationUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-
+@Getter
 public class Game {
-//    private final List<UUID>
-//            players,
-//            spectators;
-//    private final List<UUID>
-//            seekers,
-//            hiders;
     private final HashMap<UUID, Boolean>
             players,
             spectators;
     private GameState gameState;
+    @Setter private Location gameLocation;
     private HideAndSeek plugin;
     private PlayerManager playerManager;
     private ColorUtil colorUtil;
@@ -37,6 +35,10 @@ public class Game {
         this.players = new HashMap<>();
         this.spectators = new HashMap<>();
         setState(GameState.OFFLINE);
+
+        if (plugin.getConfig().getConfigurationSection("spawn") == null) return;
+
+        gameLocation = ConfigurationUtility.readLocation(plugin.getConfig().getConfigurationSection("spawn"));
     }
 
     public void setState(GameState gameState){
@@ -84,6 +86,10 @@ public class Game {
 
     public void registerListeners(){
         plugin.getServer().getPluginManager().registerEvents(new BlockBreakListener(this),plugin);
+        plugin.getServer().getPluginManager().registerEvents(new BlockPlaceListener(this),plugin);
+        plugin.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this),plugin);
+        plugin.getServer().getPluginManager().registerEvents(new PlayerQuitListener(this),plugin);
+        plugin.getServer().getPluginManager().registerEvents(new PlayerDropItemListener(this),plugin);
         plugin.getServer().getPluginManager().registerEvents(new EntityDamageByEntityListener(this),plugin);
     }
 
@@ -102,6 +108,15 @@ public class Game {
         player.getInventory().clear();
         player.setGameMode(GameMode.SPECTATOR);
     }
+
+    public void removePlayer(final @NotNull Player player){
+        players.remove(player.getUniqueId());
+        player.getInventory().clear();
+    }
+    public void removeSpectator(final @NotNull Player player){
+        spectators.remove(player.getUniqueId());
+        player.getInventory().clear();
+    }
     public void sendMessage(@NotNull String str){
         for (UUID playerUUID : players.keySet()){
             Player player = plugin.getServer().getPlayer(playerUUID);
@@ -118,16 +133,19 @@ public class Game {
         }
     }
 
-    public boolean isPlaying(final @NotNull Player player){
-        return players.containsKey(player.getUniqueId());
+    public boolean isPlaying(final @NotNull UUID playerUUID){
+        return players.containsKey(playerUUID);
+    }
+    public boolean isSpectating(final @NotNull UUID playerUUID){
+        return spectators.containsKey(playerUUID);
     }
 
     public boolean isSeeker(final @NotNull UUID playerUUID) {
-        return players.containsValue(true);
+        return players.containsKey(playerUUID);
     }
 
-    public boolean isHider(final @NotNull Player player){
-        return players.containsValue(false);
+    public boolean isHider(final @NotNull UUID playerUUID){
+        return players.containsKey(playerUUID);
     }
 
     public UUID getSeekers(){
